@@ -3,41 +3,36 @@
  * MAIN CLASS - HotelApp
  * ============================================================
  *
- * Use Case 5: Booking Request Queue (FIFO)
+ * Use Case 6: Room Allocation Processing
  *
- * @version 5.0
+ * @version 6.0
  */
 public class HotelApp {
 
     public static void main(String[] args) {
 
-        // Step 1: Display header
-        System.out.println("Booking Request Queue");
+        System.out.println("Room Allocation Processing");
 
-        // Step 2: Create queue
-        BookingRequestQueue bookingQueue = new BookingRequestQueue();
+        // Step 1: Inventory
+        RoomInventory inventory = new RoomInventory();
 
-        // Step 3: Create booking requests
-        Reservation r1 = new Reservation("Mohit", "Single");
-        Reservation r2 = new Reservation("Rohit", "Double");
-        Reservation r3 = new Reservation("Subhas", "Suite");
+        // Step 2: Booking Queue
+        BookingRequestQueue queue = new BookingRequestQueue();
 
-        // Step 4: Add to queue
-        bookingQueue.addRequest(r1);
-        bookingQueue.addRequest(r2);
-        bookingQueue.addRequest(r3);
+        // Step 3: Add booking requests
+        queue.addRequest(new Reservation("Abhi", "Single"));
+        queue.addRequest(new Reservation("Subha", "Single"));
+        queue.addRequest(new Reservation("Vanmathi", "Suite"));
+
+        // Step 4: Allocation service
+        RoomAllocationService allocator = new RoomAllocationService();
 
         // Step 5: Process queue (FIFO)
-        while (bookingQueue.hasPendingRequests()) {
+        while (queue.hasPendingRequests()) {
 
-            Reservation r = bookingQueue.getNextRequest();
+            Reservation r = queue.getNextRequest();
 
-            System.out.println(
-                    "Processing booking for Guest: "
-                            + r.getGuestName()
-                            + ", Room Type: "
-                            + r.getRoomType()
-            );
+            allocator.allocateRoom(r, inventory);
         }
     }
 }
