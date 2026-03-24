@@ -25,12 +25,15 @@ public class RoomInventory {
         roomAvailability.put("Suite", 2);
     }
 
-    public int getAvailability(String roomType) {
+    public int getRoomAvailability(String roomType) {
         return roomAvailability.getOrDefault(roomType, 0);
     }
 
     public void updateAvailability(String roomType, int count) {
         roomAvailability.put(roomType, count);
+    }
+    public Map<String, Integer> getRoomAvailability() {
+        return roomAvailability;
     }
 
     /**
