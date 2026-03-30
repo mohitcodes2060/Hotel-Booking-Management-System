@@ -1,41 +1,31 @@
-import java.util.Scanner;
-
 public class HotelApp {
 
     public static void main(String[] args) {
 
-        System.out.println("Booking Validation");
+        System.out.println("Booking Cancellation");
 
-        Scanner scanner = new Scanner(System.in);
-
+        // Inventory
         RoomInventory inventory = new RoomInventory();
-        ReservationValidator validator = new ReservationValidator();
-        BookingRequestQueue bookingQueue = new BookingRequestQueue();
 
-        try {
-            // User input
-            System.out.print("Enter guest name: ");
-            String guestName = scanner.nextLine();
+        // Cancellation service
+        CancellationService cancelService = new CancellationService();
 
-            System.out.print("Enter room type (Single/Double/Suite): ");
-            String roomType = scanner.nextLine();
+        // STEP 1: Simulate confirmed booking
+        String reservationId = "Single-1";
+        String roomType = "Single";
 
-            // ✅ VALIDATION (Fail-Fast)
-            validator.validate(guestName, roomType, inventory);
+        cancelService.registerBooking(reservationId, roomType);
 
-            // If valid → add booking
-            Reservation reservation = new Reservation(guestName, roomType);
-            bookingQueue.addRequest(reservation);
+        // STEP 2: Cancel booking
+        cancelService.cancelBooking(reservationId, inventory);
 
-            System.out.println("Booking request added successfully.");
+        // STEP 3: Show rollback history
+        cancelService.showRollbackHistory();
 
-        } catch (InvalidBookingException e) {
-
-            // ✅ Graceful failure
-            System.out.println("Booking failed: " + e.getMessage());
-
-        } finally {
-            scanner.close();
-        }
+        // STEP 4: Show updated inventory
+        System.out.println(
+                "\nUpdated Single Room Availability: "
+                        + inventory.getRoomAvailability("Single")
+        );
     }
 }
