@@ -1,17 +1,41 @@
+import java.util.Scanner;
+
 public class HotelApp {
 
     public static void main(String[] args) {
 
-        System.out.println("Booking History and Reporting\n");
+        System.out.println("Booking Validation");
 
-        BookingHistory history = new BookingHistory();
+        Scanner scanner = new Scanner(System.in);
 
-        // Directly add confirmed bookings (NO allocation print)
-        history.addReservation(new Reservation("Abhi", "Single"));
-        history.addReservation(new Reservation("Subha", "Double"));
-        history.addReservation(new Reservation("Vanmathi", "Suite"));
+        RoomInventory inventory = new RoomInventory();
+        ReservationValidator validator = new ReservationValidator();
+        BookingRequestQueue bookingQueue = new BookingRequestQueue();
 
-        BookingReportService reportService = new BookingReportService();
-        reportService.generateReport(history);
+        try {
+            // User input
+            System.out.print("Enter guest name: ");
+            String guestName = scanner.nextLine();
+
+            System.out.print("Enter room type (Single/Double/Suite): ");
+            String roomType = scanner.nextLine();
+
+            // ✅ VALIDATION (Fail-Fast)
+            validator.validate(guestName, roomType, inventory);
+
+            // If valid → add booking
+            Reservation reservation = new Reservation(guestName, roomType);
+            bookingQueue.addRequest(reservation);
+
+            System.out.println("Booking request added successfully.");
+
+        } catch (InvalidBookingException e) {
+
+            // ✅ Graceful failure
+            System.out.println("Booking failed: " + e.getMessage());
+
+        } finally {
+            scanner.close();
+        }
     }
 }
